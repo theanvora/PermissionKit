@@ -1,16 +1,60 @@
 # PermissionKit
 
-Base xin quyền iOS viết bằng **async/await + SwiftUI**. Mỗi quyền là **một library product riêng**, project chỉ link cái cần → không kéo theo system framework thừa (sạch Privacy Manifest, App Store review).
+A modern, modular permission layer for iOS, written with Swift Concurrency and SwiftUI.
 
-## Products
+Every permission lives in its **own library product**, so an app links only what it actually uses. Unused products are never compiled into your binary — keeping your app free of system frameworks you don't need and your **Privacy Manifest** honest.
 
-| Product | Framework | Info.plist key |
+[![Swift](https://img.shields.io/badge/Swift-5.9+-orange.svg)](https://swift.org)
+[![Platform](https://img.shields.io/badge/iOS-16%2B-blue.svg)](https://developer.apple.com/ios/)
+[![SPM](https://img.shields.io/badge/SPM-compatible-brightgreen.svg)](https://swift.org/package-manager/)
+
+## Why PermissionKit
+
+- **Modular by design** — one product per permission. Link `PermissionCamera` and you get AVFoundation; you don't drag in CoreLocation, Contacts, or HealthKit.
+- **Async/await first** — a single `async` API across every permission, with legacy delegate/callback APIs wrapped behind `CheckedContinuation`.
+- **Unified status model** — all of Apple's per-framework enums normalize into one `PermissionStatus` (`authorized`, `limited`, `provisional`, `denied`, `restricted`, `notDetermined`).
+- **SwiftUI-ready** — `PermissionState` (an `ObservableObject`) and a drop-in `PermissionButton`.
+- **Settings fallback built in** — `requestOrOpenSettings()` prompts on first use and routes to Settings once denied.
+
+## Installation
+
+### Swift Package Manager
+
+In Xcode: **File ▸ Add Package Dependencies…** and enter:
+
+```
+https://github.com/theanvora/PermissionKit.git
+```
+
+Or in `Package.swift`:
+
+```swift
+.package(url: "https://github.com/theanvora/PermissionKit.git", from: "1.0.0")
+```
+
+Then add **only** the products you need:
+
+```swift
+.target(
+    name: "MyApp",
+    dependencies: [
+        .product(name: "PermissionCamera", package: "PermissionKit"),
+        .product(name: "PermissionPhotos", package: "PermissionKit"),
+    ]
+)
+```
+
+> When adding the package in Xcode, all products appear in the picker — **tick only the ones you use**. Unticked products are not compiled or linked into your app.
+
+## Available Permissions
+
+| Product | Framework | Required `Info.plist` key(s) |
 |---|---|---|
-| `PermissionCore` | — | (chung: `Permission`, `PermissionStatus`, `PermissionState`, `PermissionButton`, `PermissionSettings`) |
+| `PermissionCore` | — | _(shared types: `Permission`, `PermissionStatus`, `PermissionState`, `PermissionButton`, `PermissionSettings`)_ |
 | `PermissionCamera` | AVFoundation | `NSCameraUsageDescription` |
 | `PermissionMicrophone` | AVFoundation | `NSMicrophoneUsageDescription` |
 | `PermissionPhotos` | Photos | `NSPhotoLibraryUsageDescription` / `NSPhotoLibraryAddUsageDescription` |
-| `PermissionLocation` | CoreLocation | `NSLocationWhenInUseUsageDescription` / `…AlwaysAndWhenInUse…` |
+| `PermissionLocation` | CoreLocation | `NSLocationWhenInUseUsageDescription` / `NSLocationAlwaysAndWhenInUseUsageDescription` |
 | `PermissionNotification` | UserNotifications | — |
 | `PermissionContacts` | Contacts | `NSContactsUsageDescription` |
 | `PermissionTracking` | AppTrackingTransparency | `NSUserTrackingUsageDescription` |
@@ -24,34 +68,22 @@ Base xin quyền iOS viết bằng **async/await + SwiftUI**. Mỗi quyền là 
 | `PermissionBiometric` | LocalAuthentication | `NSFaceIDUsageDescription` |
 | `PermissionHealth` | HealthKit | `NSHealthShareUsageDescription` / `NSHealthUpdateUsageDescription` + HealthKit entitlement |
 
-> Khi add package vào Xcode, danh sách product sẽ hiện đầy đủ — **chỉ tick cái bạn dùng**. Product không tick sẽ không compile/link vào app.
+## Usage
 
-## Cài đặt
+### Imperative (async/await)
 
-```swift
-.package(url: "https://github.com/theanvora/PermissionKit.git", from: "1.0.0")
-```
-
-Rồi chỉ thêm product cần dùng, ví dụ Snapfolio (PDF scan) chỉ cần camera + photos:
-
-```swift
-.target(name: "Snapfolio", dependencies: [
-    .product(name: "PermissionCamera", package: "PermissionKit"),
-    .product(name: "PermissionPhotos", package: "PermissionKit"),
-])
-```
-
-## Dùng
-
-### Async/await trực tiếp
 ```swift
 import PermissionCamera
 
 let status = await CameraPermission().request()
-if status.isAuthorized { /* mở camera */ }
+guard status.isAuthorized else { return }
+// Proceed to open the camera.
 ```
 
-### SwiftUI – `PermissionState`
+`status()` reads the current grant without ever showing a prompt; `request()` shows the system dialog only when the user hasn't decided yet, and otherwise echoes the existing status.
+
+### SwiftUI — `PermissionState`
+
 ```swift
 import PermissionCore
 import PermissionCamera
@@ -60,33 +92,61 @@ struct ScanView: View {
     @StateObject private var camera = PermissionState(CameraPermission())
 
     var body: some View {
-        Button("Bật camera") {
+        Button("Enable Camera") {
             Task { await camera.requestOrOpenSettings() }
         }
-        .task { await camera.refresh() }
         .disabled(camera.isAuthorized)
+        .task { await camera.refresh() }
     }
 }
 ```
 
-### SwiftUI – `PermissionButton` dựng sẵn
+### SwiftUI — `PermissionButton`
+
+A self-contained button that requests on tap and falls back to Settings when denied:
+
 ```swift
 PermissionButton(PhotosPermission()) { status in
-    Label("Thư viện ảnh", systemImage: status.isAuthorized ? "checkmark.circle" : "photo")
+    Label("Photo Library", systemImage: status.isAuthorized ? "checkmark.circle" : "photo")
 }
 ```
 
-## Tự viết thêm quyền
-Tạo target mới phụ thuộc `PermissionCore`, conform `Permission`, map về `PermissionStatus`.
+## The `PermissionStatus` model
+
+| Case | Meaning |
+|---|---|
+| `notDetermined` | The system prompt has not been shown yet. |
+| `authorized` | Full access granted. |
+| `limited` | Partial access (e.g. selected photos or contacts). |
+| `provisional` | Silently granted without a prompt (notifications). |
+| `denied` | Explicitly refused by the user. |
+| `restricted` | Locked down by the OS (Screen Time, MDM…). |
+
+Convenience: `status.isAuthorized` and `status.shouldOpenSettings`.
+
+## Adding your own permission
+
+Create a target that depends on `PermissionCore`, conform to `Permission`, and map the framework's native status into `PermissionStatus`:
+
 ```swift
+import PermissionCore
+
 public struct MyPermission: Permission {
     public init() {}
-    public var title: String { "..." }
-    public func status() async -> PermissionStatus { ... }
-    public func request() async -> PermissionStatus { ... }
+    public var title: String { "My Feature" }
+
+    public func status() async -> PermissionStatus { /* read native status */ }
+
+    @discardableResult
+    public func request() async -> PermissionStatus { /* request + map */ }
 }
 ```
 
-## Yêu cầu
-- iOS 16+
-- Swift 5.9+
+## Requirements
+
+- iOS 16.0+
+- Swift 5.9+ / Xcode 15+
+
+## License
+
+MIT
