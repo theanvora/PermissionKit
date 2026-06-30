@@ -1,13 +1,14 @@
 #if canImport(SwiftUI)
 import SwiftUI
 
-/// Wrapper observable cho SwiftUI: giữ trạng thái 1 quyền và expose request/refresh.
+/// SwiftUI-friendly box around a single permission: it publishes the live status
+/// and forwards `request`/`refresh` so views can bind to it directly.
 ///
 /// ```swift
 /// @StateObject private var camera = PermissionState(CameraPermission())
 ///
 /// var body: some View {
-///     Button("Bật camera") { Task { await camera.request() } }
+///     Button("Enable camera") { Task { await camera.request() } }
 ///         .task { await camera.refresh() }
 /// }
 /// ```
@@ -23,19 +24,19 @@ public final class PermissionState: ObservableObject {
 
     public var isAuthorized: Bool { status.isAuthorized }
 
-    /// Đọc lại trạng thái (không bật popup).
+    /// Re-reads the current grant silently (no system prompt).
     public func refresh() async {
         status = await permission.status()
     }
 
-    /// Xin quyền và cập nhật `status`.
+    /// Triggers the prompt when needed and stores the resulting `status`.
     @discardableResult
     public func request() async -> PermissionStatus {
         status = await permission.request()
         return status
     }
 
-    /// Nếu chưa hỏi thì xin; nếu bị từ chối thì mở Settings.
+    /// Ask on first use; bounce to Settings if the user has already said no.
     public func requestOrOpenSettings() async {
         let result = await request()
         if result.shouldOpenSettings {

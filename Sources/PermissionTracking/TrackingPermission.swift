@@ -1,7 +1,7 @@
 import AppTrackingTransparency
 import PermissionCore
 
-/// Quyền App Tracking Transparency (ATT). Cần `NSUserTrackingUsageDescription`.
+/// IDFA / App Tracking Transparency. Requires `NSUserTrackingUsageDescription`.
 public struct TrackingPermission: Permission {
     public init() {}
 

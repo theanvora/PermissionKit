@@ -1,16 +1,16 @@
 import Foundation
 
-/// Giao thức chung cho mọi quyền. Mỗi quyền nằm ở 1 target riêng,
-/// chỉ import system framework tương ứng (Camera → AVFoundation, ...).
+/// One uniform surface every concrete permission adopts. Each lives in its own
+/// target so it pulls in only its matching system framework (e.g. Camera ⇒ AVFoundation).
 public protocol Permission: Sendable {
-    /// Tên hiển thị (dùng cho UI/log).
+    /// Human-readable name, handy for UI labels and logging.
     var title: String { get }
 
-    /// Đọc trạng thái hiện tại, KHÔNG bật popup hệ thống.
+    /// Peek at the current grant without ever triggering a system dialog.
     func status() async -> PermissionStatus
 
-    /// Xin quyền. Nếu đã quyết định rồi thì trả về trạng thái hiện tại,
-    /// không hiện lại popup.
+    /// Ask for access. Once the user has already decided, this is a no-op that
+    /// simply echoes the existing status — the prompt never reappears.
     @discardableResult
     func request() async -> PermissionStatus
 }

@@ -1,7 +1,8 @@
 #if canImport(SwiftUI)
 import SwiftUI
 
-/// Nút SwiftUI dựng sẵn: tự xin quyền, nếu bị từ chối thì mở Settings.
+/// A drop-in SwiftUI button that handles the whole flow: tap to request, and
+/// route to Settings automatically once access has been refused.
 ///
 /// ```swift
 /// PermissionButton(CameraPermission()) { status in

@@ -1,7 +1,7 @@
 import AVFoundation
 import PermissionCore
 
-/// Quyền Camera (video). Cần `NSCameraUsageDescription` trong Info.plist.
+/// Video-capture access. Remember to declare `NSCameraUsageDescription`.
 public struct CameraPermission: Permission {
     public init() {}
 

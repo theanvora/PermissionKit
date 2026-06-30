@@ -14,6 +14,15 @@ Base xin quyền iOS viết bằng **async/await + SwiftUI**. Mỗi quyền là 
 | `PermissionNotification` | UserNotifications | — |
 | `PermissionContacts` | Contacts | `NSContactsUsageDescription` |
 | `PermissionTracking` | AppTrackingTransparency | `NSUserTrackingUsageDescription` |
+| `PermissionCalendar` | EventKit | `NSCalendarsUsageDescription` / `NSCalendarsWriteOnlyAccessUsageDescription` |
+| `PermissionReminders` | EventKit | `NSRemindersUsageDescription` / `NSRemindersFullAccessUsageDescription` |
+| `PermissionSpeech` | Speech | `NSSpeechRecognitionUsageDescription` |
+| `PermissionBluetooth` | CoreBluetooth | `NSBluetoothAlwaysUsageDescription` |
+| `PermissionMotion` | CoreMotion | `NSMotionUsageDescription` |
+| `PermissionMusic` | MediaPlayer | `NSAppleMusicUsageDescription` |
+| `PermissionSiri` | Intents | `NSSiriUsageDescription` |
+| `PermissionBiometric` | LocalAuthentication | `NSFaceIDUsageDescription` |
+| `PermissionHealth` | HealthKit | `NSHealthShareUsageDescription` / `NSHealthUpdateUsageDescription` + HealthKit entitlement |
 
 > Khi add package vào Xcode, danh sách product sẽ hiện đầy đủ — **chỉ tick cái bạn dùng**. Product không tick sẽ không compile/link vào app.
 

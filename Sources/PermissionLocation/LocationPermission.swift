@@ -1,8 +1,8 @@
 import CoreLocation
 import PermissionCore
 
-/// Quyền Location. Cần `NSLocationWhenInUseUsageDescription`
-/// (và `NSLocationAlwaysAndWhenInUseUsageDescription` cho `.always`).
+/// Location access. Declare `NSLocationWhenInUseUsageDescription`, plus
+/// `NSLocationAlwaysAndWhenInUseUsageDescription` if you ever pass `.always`.
 public final class LocationPermission: NSObject, Permission, @unchecked Sendable {
     public enum Kind: Sendable {
         case whenInUse
@@ -53,7 +53,7 @@ public final class LocationPermission: NSObject, Permission, @unchecked Sendable
 
 extension LocationPermission: CLLocationManagerDelegate {
     public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        // Delegate cũng bị gọi 1 lần ngay khi set delegate với .notDetermined → bỏ qua.
+        // This fires once right after the delegate is wired up (still .notDetermined) — ignore that pass.
         guard manager.authorizationStatus != .notDetermined,
               let continuation else { return }
         self.continuation = nil

@@ -1,10 +1,10 @@
 import Photos
 import PermissionCore
 
-/// Quyền Photo Library. Cần `NSPhotoLibraryUsageDescription`
-/// (và `NSPhotoLibraryAddUsageDescription` nếu chỉ ghi).
+/// Photo library access. Declare `NSPhotoLibraryUsageDescription`, or
+/// `NSPhotoLibraryAddUsageDescription` when you only ever save images.
 public struct PhotosPermission: Permission {
-    /// Mức truy cập muốn xin.
+    /// Which slice of the library to ask for.
     public enum Access: Sendable {
         case readWrite
         case addOnly

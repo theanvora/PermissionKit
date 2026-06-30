@@ -1,21 +1,21 @@
 import Foundation
 
-/// Trạng thái quyền đã chuẩn hoá cho mọi loại permission.
+/// A single, framework-agnostic vocabulary that every permission collapses into.
 public enum PermissionStatus: String, Sendable, Equatable, CaseIterable {
-    /// Người dùng chưa được hỏi.
+    /// No decision yet — the system prompt has never been shown.
     case notDetermined
-    /// Đã cấp đầy đủ.
+    /// Full access granted.
     case authorized
-    /// Cấp giới hạn (Photos `limited`, Contacts `limited`...).
+    /// Partial access (e.g. a subset of photos or contacts).
     case limited
-    /// Cấp tạm thời/ngầm (Notification `provisional`).
+    /// Silently granted without a prompt (notifications only).
     case provisional
-    /// Người dùng từ chối.
+    /// Explicitly refused by the user.
     case denied
-    /// Bị chặn bởi hệ thống (parental control, MDM...). Không thể tự đổi.
+    /// Locked down by the OS (Screen Time, MDM…); the user cannot flip it.
     case restricted
 
-    /// Coi như đã có quyền dùng được (authorized / limited / provisional).
+    /// Whether the feature can actually be used right now.
     public var isAuthorized: Bool {
         switch self {
         case .authorized, .limited, .provisional: return true
@@ -23,7 +23,7 @@ public enum PermissionStatus: String, Sendable, Equatable, CaseIterable {
         }
     }
 
-    /// Có nên đẩy người dùng ra Settings không (denied/restricted).
+    /// True when the only way forward is the system Settings app.
     public var shouldOpenSettings: Bool {
         self == .denied || self == .restricted
     }

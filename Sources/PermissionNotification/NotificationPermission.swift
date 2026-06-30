@@ -1,7 +1,7 @@
 import UserNotifications
 import PermissionCore
 
-/// Quyền Push/Local Notification.
+/// Local and remote notification authorization.
 public struct NotificationPermission: Permission {
     private let options: UNAuthorizationOptions
 

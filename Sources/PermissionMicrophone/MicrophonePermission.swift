@@ -1,7 +1,7 @@
 import AVFoundation
 import PermissionCore
 
-/// Quyền Microphone (audio). Cần `NSMicrophoneUsageDescription` trong Info.plist.
+/// Audio-capture access. Remember to declare `NSMicrophoneUsageDescription`.
 public struct MicrophonePermission: Permission {
     public init() {}
 

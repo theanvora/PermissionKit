@@ -1,7 +1,7 @@
 import Contacts
 import PermissionCore
 
-/// Quyền Contacts. Cần `NSContactsUsageDescription` trong Info.plist.
+/// Address-book access. Declare `NSContactsUsageDescription`.
 public struct ContactsPermission: Permission {
     public init() {}
 
@@ -26,7 +26,7 @@ public struct ContactsPermission: Permission {
         case .denied:        return .denied
         case .restricted:    return .restricted
         @unknown default:
-            // iOS 18+ thêm `.limited`; map qua limited nếu có.
+            // iOS 18 introduced `.limited`; fold it into our limited case when present.
             if #available(iOS 18.0, *), status == .limited {
                 return .limited
             }
