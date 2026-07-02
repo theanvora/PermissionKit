@@ -28,18 +28,12 @@ public struct CalendarPermission: Permission {
 
         let store = EKEventStore()
         do {
-            if #available(iOS 17.0, *) {
-                let granted = try await {
-                    switch access {
-                    case .full:      return try await store.requestFullAccessToEvents()
-                    case .writeOnly: return try await store.requestWriteOnlyAccessToEvents()
-                    }
-                }()
-                return granted ? (access == .writeOnly ? .limited : .authorized) : .denied
-            } else {
-                let granted = try await store.requestAccess(to: .event)
-                return granted ? .authorized : .denied
+            let granted: Bool
+            switch access {
+            case .full:      granted = try await store.requestFullAccessToEvents()
+            case .writeOnly: granted = try await store.requestWriteOnlyAccessToEvents()
             }
+            return granted ? (access == .writeOnly ? .limited : .authorized) : .denied
         } catch {
             return .denied
         }

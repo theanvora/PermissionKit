@@ -5,7 +5,7 @@ A modern, modular permission layer for iOS, written with Swift Concurrency and S
 Every permission lives in its **own library product**, so an app links only what it actually uses. Unused products are never compiled into your binary — keeping your app free of system frameworks you don't need and your **Privacy Manifest** honest.
 
 [![Swift](https://img.shields.io/badge/Swift-5.9+-orange.svg)](https://swift.org)
-[![Platform](https://img.shields.io/badge/iOS-16%2B-blue.svg)](https://developer.apple.com/ios/)
+[![Platform](https://img.shields.io/badge/iOS-26%2B-blue.svg)](https://developer.apple.com/ios/)
 [![SPM](https://img.shields.io/badge/SPM-compatible-brightgreen.svg)](https://swift.org/package-manager/)
 
 ## Why PermissionKit
@@ -144,7 +144,7 @@ public struct MyPermission: Permission {
 
 ## Requirements
 
-- iOS 16.0+
+- iOS 26.0+
 - Swift 5.9+ / Xcode 15+
 
 ## License

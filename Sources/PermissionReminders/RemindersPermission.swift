@@ -19,12 +19,7 @@ public struct RemindersPermission: Permission {
 
         let store = EKEventStore()
         do {
-            let granted: Bool
-            if #available(iOS 17.0, *) {
-                granted = try await store.requestFullAccessToReminders()
-            } else {
-                granted = try await store.requestAccess(to: .reminder)
-            }
+            let granted = try await store.requestFullAccessToReminders()
             return granted ? .authorized : .denied
         } catch {
             return .denied
