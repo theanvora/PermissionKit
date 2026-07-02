@@ -25,11 +25,9 @@ public struct ContactsPermission: Permission {
         case .authorized:    return .authorized
         case .denied:        return .denied
         case .restricted:    return .restricted
+        case .limited:
+            return .limited
         @unknown default:
-            // iOS 18 introduced `.limited`; fold it into our limited case when present.
-            if #available(iOS 18.0, *), status == .limited {
-                return .limited
-            }
             return .denied
         }
     }

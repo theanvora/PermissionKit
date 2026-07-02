@@ -36,10 +36,9 @@ public struct RemindersPermission: Permission {
         case .notDetermined: return .notDetermined
         case .restricted:    return .restricted
         case .denied:        return .denied
-        case .authorized:    return .authorized   // same raw value as .fullAccess on iOS 17+
-        @unknown default:
-            if #available(iOS 17.0, *), status == .writeOnly { return .limited }
-            return .denied
+        case .authorized:    return .authorized
+        case .writeOnly:     return .limited
+        @unknown default:    return .denied
         }
     }
 }
