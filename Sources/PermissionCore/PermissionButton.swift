@@ -1,3 +1,10 @@
+//
+//  PermissionButton.swift
+//  PermissionKit
+//
+//  Created by Anvora on 02/07/2026.
+//
+
 #if canImport(SwiftUI)
 import SwiftUI
 

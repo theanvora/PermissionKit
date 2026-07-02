@@ -1,3 +1,10 @@
+//
+//  SiriPermission.swift
+//  PermissionKit
+//
+//  Created by Anvora on 02/07/2026.
+//
+
 import Intents
 import PermissionCore
 

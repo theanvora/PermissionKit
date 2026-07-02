@@ -1,3 +1,10 @@
+//
+//  PermissionStatus.swift
+//  PermissionKit
+//
+//  Created by Anvora on 02/07/2026.
+//
+
 import Foundation
 
 /// A single, framework-agnostic vocabulary that every permission collapses into.

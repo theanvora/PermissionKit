@@ -1,3 +1,10 @@
+//
+//  Permission.swift
+//  PermissionKit
+//
+//  Created by Anvora on 02/07/2026.
+//
+
 import Foundation
 
 /// One uniform surface every concrete permission adopts. Each lives in its own
