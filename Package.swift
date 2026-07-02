@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "PermissionKit",
     platforms: [
-        .iOS("26.0")
+        .iOS("18.0")
     ],
     products: [
         .library(name: "PermissionCore",         targets: ["PermissionCore"]),
