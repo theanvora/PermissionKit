@@ -13,7 +13,7 @@ Every permission lives in its **own library product**, so an app links only what
 - **Modular by design** — one product per permission. Link `PermissionCamera` and you get AVFoundation; you don't drag in CoreLocation, Contacts, or HealthKit.
 - **Async/await first** — a single `async` API across every permission, with legacy delegate/callback APIs wrapped behind `CheckedContinuation`.
 - **Unified status model** — all of Apple's per-framework enums normalize into one `PermissionStatus` (`authorized`, `limited`, `provisional`, `denied`, `restricted`, `notDetermined`).
-- **SwiftUI-ready** — `PermissionState` (an `ObservableObject`) and a drop-in `PermissionButton`.
+- **SwiftUI-ready** — `PermissionState` (an `@Observable`) and a drop-in `PermissionButton`.
 - **Settings fallback built in** — `requestOrOpenSettings()` prompts on first use and routes to Settings once denied.
 
 ## Installation
@@ -89,7 +89,7 @@ import PermissionCore
 import PermissionCamera
 
 struct ScanView: View {
-    @StateObject private var camera = PermissionState(CameraPermission())
+    @State private var camera = PermissionState(CameraPermission())
 
     var body: some View {
         Button("Enable Camera") {

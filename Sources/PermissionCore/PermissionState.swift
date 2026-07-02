@@ -1,11 +1,12 @@
 #if canImport(SwiftUI)
 import SwiftUI
+import Observation
 
 /// SwiftUI-friendly box around a single permission: it publishes the live status
 /// and forwards `request`/`refresh` so views can bind to it directly.
 ///
 /// ```swift
-/// @StateObject private var camera = PermissionState(CameraPermission())
+/// @State private var camera = PermissionState(CameraPermission())
 ///
 /// var body: some View {
 ///     Button("Enable camera") { Task { await camera.request() } }
@@ -13,10 +14,11 @@ import SwiftUI
 /// }
 /// ```
 @MainActor
-public final class PermissionState: ObservableObject {
-    @Published public private(set) var status: PermissionStatus = .notDetermined
+@Observable
+public final class PermissionState {
+    public private(set) var status: PermissionStatus = .notDetermined
 
-    private let permission: Permission
+    @ObservationIgnored private let permission: Permission
 
     public init(_ permission: Permission) {
         self.permission = permission

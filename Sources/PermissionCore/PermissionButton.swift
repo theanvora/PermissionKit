@@ -10,7 +10,7 @@ import SwiftUI
 /// }
 /// ```
 public struct PermissionButton<Label: View>: View {
-    @StateObject private var state: PermissionState
+    @State private var state: PermissionState
     private let label: (PermissionStatus) -> Label
     private let onChange: ((PermissionStatus) -> Void)?
 
@@ -19,7 +19,7 @@ public struct PermissionButton<Label: View>: View {
         onChange: ((PermissionStatus) -> Void)? = nil,
         @ViewBuilder label: @escaping (PermissionStatus) -> Label
     ) {
-        _state = StateObject(wrappedValue: PermissionState(permission))
+        _state = State(wrappedValue: PermissionState(permission))
         self.label = label
         self.onChange = onChange
     }
