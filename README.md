@@ -23,13 +23,13 @@ Every permission lives in its **own library product**, so an app links only what
 In Xcode: **File ▸ Add Package Dependencies…** and enter:
 
 ```
-https://github.com/theanvora/PermissionKit.git
+https://github.com/theanvyx/PermissionKit.git
 ```
 
 Or in `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/theanvora/PermissionKit.git", from: "1.0.0")
+.package(url: "https://github.com/theanvyx/PermissionKit.git", from: "1.0.0")
 ```
 
 Then add **only** the products you need:
