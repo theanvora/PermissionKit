@@ -38,7 +38,7 @@ public struct RemindersPermission: Permission {
         case .notDetermined: return .notDetermined
         case .restricted:    return .restricted
         case .denied:        return .denied
-        case .authorized:    return .authorized
+        case .fullAccess:    return .authorized
         case .writeOnly:     return .limited
         @unknown default:    return .denied
         }

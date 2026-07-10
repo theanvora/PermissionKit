@@ -10,6 +10,10 @@ import PermissionCore
 
 /// Location access. Declare `NSLocationWhenInUseUsageDescription`, plus
 /// `NSLocationAlwaysAndWhenInUseUsageDescription` if you ever pass `.always`.
+/// `@unchecked Sendable`: `CLLocationManager` and its delegate callbacks are confined to the
+/// main run loop (the manager is created here on the main thread), so the mutable `continuation`
+/// is only ever touched there. `@MainActor` can't be used instead because `Permission` is a
+/// nonisolated `Sendable` protocol and a main-actor-isolated conformance cannot satisfy it.
 public final class LocationPermission: NSObject, Permission, @unchecked Sendable {
     public enum Kind: Sendable {
         case whenInUse

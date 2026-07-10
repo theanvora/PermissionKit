@@ -1,5 +1,12 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 6.2
 import PackageDescription
+
+let concurrencyBaseline: [SwiftSetting] = [
+    .swiftLanguageMode(.v6),
+    .defaultIsolation(nil),
+    .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+    .enableUpcomingFeature("InferIsolatedConformances"),
+]
 
 let package = Package(
     name: "PermissionKit",
@@ -26,23 +33,23 @@ let package = Package(
         .library(name: "PermissionHealth",       targets: ["PermissionHealth"]),
     ],
     targets: [
-        .target(name: "PermissionCore"),
-        .target(name: "PermissionCamera",       dependencies: ["PermissionCore"]),
-        .target(name: "PermissionMicrophone",   dependencies: ["PermissionCore"]),
-        .target(name: "PermissionPhotos",       dependencies: ["PermissionCore"]),
-        .target(name: "PermissionLocation",     dependencies: ["PermissionCore"]),
-        .target(name: "PermissionNotification", dependencies: ["PermissionCore"]),
-        .target(name: "PermissionContacts",     dependencies: ["PermissionCore"]),
-        .target(name: "PermissionTracking",     dependencies: ["PermissionCore"]),
-        .target(name: "PermissionCalendar",     dependencies: ["PermissionCore"]),
-        .target(name: "PermissionReminders",    dependencies: ["PermissionCore"]),
-        .target(name: "PermissionSpeech",       dependencies: ["PermissionCore"]),
-        .target(name: "PermissionBluetooth",    dependencies: ["PermissionCore"]),
-        .target(name: "PermissionMotion",       dependencies: ["PermissionCore"]),
-        .target(name: "PermissionMusic",        dependencies: ["PermissionCore"]),
-        .target(name: "PermissionSiri",         dependencies: ["PermissionCore"]),
-        .target(name: "PermissionBiometric",    dependencies: ["PermissionCore"]),
-        .target(name: "PermissionHealth",       dependencies: ["PermissionCore"]),
-        .testTarget(name: "PermissionKitTests",  dependencies: ["PermissionCore"]),
+        .target(name: "PermissionCore",         swiftSettings: concurrencyBaseline),
+        .target(name: "PermissionCamera",       dependencies: ["PermissionCore"], swiftSettings: concurrencyBaseline),
+        .target(name: "PermissionMicrophone",   dependencies: ["PermissionCore"], swiftSettings: concurrencyBaseline),
+        .target(name: "PermissionPhotos",       dependencies: ["PermissionCore"], swiftSettings: concurrencyBaseline),
+        .target(name: "PermissionLocation",     dependencies: ["PermissionCore"], swiftSettings: concurrencyBaseline),
+        .target(name: "PermissionNotification", dependencies: ["PermissionCore"], swiftSettings: concurrencyBaseline),
+        .target(name: "PermissionContacts",     dependencies: ["PermissionCore"], swiftSettings: concurrencyBaseline),
+        .target(name: "PermissionTracking",     dependencies: ["PermissionCore"], swiftSettings: concurrencyBaseline),
+        .target(name: "PermissionCalendar",     dependencies: ["PermissionCore"], swiftSettings: concurrencyBaseline),
+        .target(name: "PermissionReminders",    dependencies: ["PermissionCore"], swiftSettings: concurrencyBaseline),
+        .target(name: "PermissionSpeech",       dependencies: ["PermissionCore"], swiftSettings: concurrencyBaseline),
+        .target(name: "PermissionBluetooth",    dependencies: ["PermissionCore"], swiftSettings: concurrencyBaseline),
+        .target(name: "PermissionMotion",       dependencies: ["PermissionCore"], swiftSettings: concurrencyBaseline),
+        .target(name: "PermissionMusic",        dependencies: ["PermissionCore"], swiftSettings: concurrencyBaseline),
+        .target(name: "PermissionSiri",         dependencies: ["PermissionCore"], swiftSettings: concurrencyBaseline),
+        .target(name: "PermissionBiometric",    dependencies: ["PermissionCore"], swiftSettings: concurrencyBaseline),
+        .target(name: "PermissionHealth",       dependencies: ["PermissionCore"], swiftSettings: concurrencyBaseline),
+        .testTarget(name: "PermissionKitTests",  dependencies: ["PermissionCore"], swiftSettings: concurrencyBaseline),
     ]
 )

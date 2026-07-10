@@ -12,6 +12,10 @@ import PermissionCore
 ///
 /// There is no async system API, so the first `request()` spins up a transient
 /// `CBCentralManager` and waits for the delegate to report the decision.
+/// `@unchecked Sendable`: the transient `CBCentralManager` and its delegate callbacks run on the
+/// main run loop (created here with `queue: nil`), so the mutable `central`/`continuation` state is
+/// only touched there. `@MainActor` can't be used instead because `Permission` is a nonisolated
+/// `Sendable` protocol and a main-actor-isolated conformance cannot satisfy it.
 public final class BluetoothPermission: NSObject, Permission, @unchecked Sendable {
     private var central: CBCentralManager?
     private var continuation: CheckedContinuation<PermissionStatus, Never>?
